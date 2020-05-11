@@ -31,7 +31,6 @@ func (d *Dispatched) dispatch() {
 				jobChannel := <-d.WorkerPool
 
 				// dispatch the job to the worker jon channel
-
 				jobChannel <- job
 			}(job)
 		}
