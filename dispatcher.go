@@ -1,26 +1,28 @@
 package workerThread
 
-type Dispatched struct {
-	// A pool of workers channels that are registered with the dispatched
+import "github.com/sirupsen/logrus"
+
+type Dispatcher struct {
 	WorkerPool chan chan Job
+	maxWorkers int
 }
 
-func NewDispatched(maxWorkers int) *Dispatcher {
+func NewDispatcher(maxWorkers int) *Dispatcher {
 	pool := make(chan chan Job, maxWorkers)
-	return &Dispatcher{WorkerPool: pool}
+	return &Dispatcher{WorkerPool: pool, maxWorkers: maxWorkers}
 }
 
-func (d *Dispatched) Run() {
-	// starting n number of workers
+func (d *Dispatcher) Run() {
 	for i := 0; i < d.maxWorkers; i++ {
-		worker := NewWorker(d.pool)
-		worker.Start()
+		worker := NewWorker(d.WorkerPool)
+		logrus.Println("new a worker", i)
+		go worker.Start()
 	}
 
 	go d.dispatch()
 }
 
-func (d *Dispatched) dispatch() {
+func (d *Dispatcher) dispatch() {
 	for {
 		select {
 		case job := <-JobQueue:
