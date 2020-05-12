@@ -36,14 +36,13 @@ func (p *PayloadTest) Do() error {
 	return nil
 }
 
-//test worker thread
-func TestWorkerThead(t *testing.T) {
+//benchmark test
+func BenchmarkWorkerThread(b *testing.B) {
 	JobQueue = make(chan Job, 100)
 	dispatcher := NewDispatcher(100)
 	dispatcher.Run()
 
-	for i := 0; i < 10; i++ {
-		logrus.Println("test : ", i)
+	for i := 0; i < b.N; i++ {
 		job := Job{&PayloadTest{i, "testWorker", i}}
 		logrus.Println("sdasda")
 		EnJobQueue(job)
