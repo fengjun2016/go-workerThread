@@ -16,7 +16,7 @@ func (d *Dispatcher) Run() {
 	for i := 0; i < d.maxWorkers; i++ {
 		worker := NewWorker(d.WorkerPool)
 		logrus.Println("new a worker", i)
-		go worker.Start()
+		worker.Start()
 	}
 
 	go d.dispatch()

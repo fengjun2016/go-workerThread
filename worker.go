@@ -35,24 +35,24 @@ func NewWorker(workerPool chan chan Job) Worker {
 // Start methods starts the run loop for the worker, listening for a quit channel
 // in case we need to stop it.
 func (w Worker) Start() {
-	// go func() {
-	for {
-		// register the current worker into the worker queue.
-		w.WorkerPool <- w.JobChannel
+	go func() {
+		for {
+			// register the current worker into the worker queue.
+			w.WorkerPool <- w.JobChannel
 
-		select {
-		case job := <-w.JobChannel:
-			// we hava received a worker request.
-			if err := job.Payload.Do(); err != nil {
-				logrus.Errorf("Error uploading to S3: %s", err.Error())
+			select {
+			case job := <-w.JobChannel:
+				// we hava received a worker request.
+				if err := job.Payload.Do(); err != nil {
+					logrus.Errorf("Error uploading to S3: %s", err.Error())
+				}
+			case <-w.quit:
+				// we hava received a signal to stop
+				// to do
+				return
 			}
-		case <-w.quit:
-			// we hava received a signal to stop
-			// to do
-			return
 		}
-	}
-	// }()
+	}()
 }
 
 // Stop signals the worker to stop listening for work requests
