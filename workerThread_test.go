@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"testing"
-
-	"github.com/sirupsen/logrus"
 )
 
 // var MaxWorker *int
@@ -38,13 +36,12 @@ func (p *PayloadTest) Do() error {
 
 //benchmark test
 func BenchmarkWorkerThread(b *testing.B) {
-	JobQueue = make(chan Job, 100)
-	dispatcher := NewDispatcher(100)
+	JobQueue = make(chan Job, 1000)
+	dispatcher := NewDispatcher(1000)
 	dispatcher.Run()
 
 	for i := 0; i < b.N; i++ {
 		job := Job{&PayloadTest{i, "testWorker", i}}
-		logrus.Println("sdasda")
 		EnJobQueue(job)
 	}
 }
