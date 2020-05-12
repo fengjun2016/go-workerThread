@@ -19,7 +19,7 @@ func TestingMain(m *testing.M) {
 	os.Exit(code) //注意: os.Exit不会执行defer
 }
 
-//implements the payload
+//实现接口interface
 type PayloadTest struct {
 	Id   int
 	Name string
